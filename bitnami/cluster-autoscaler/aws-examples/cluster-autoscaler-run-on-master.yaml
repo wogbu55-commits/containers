@@ -26,6 +26,22 @@ spec:
       containers:
         - image: bitnami/cluster-autoscaler:latest
           name: cluster-autoscaler
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 10000
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+            livenessProbe:
+              httpGet:
+                path: /health-check
+                port: 8085
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 15
+              timeoutSeconds: 5
+              failureThreshold: 3
+            readOnlyRootFilesystem: true  
           resources:
             limits:
               cpu: 100m
@@ -41,4 +57,8 @@ spec:
             - --skip-nodes-with-local-storage=false
             - --nodes={{ node_asg_min }}:{{ node_asg_max }}:{{ name }}
           imagePullPolicy: "Always"
+      initContainers:
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
 
