@@ -32,16 +32,16 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop: ["ALL"]
-            livenessProbe:
-              httpGet:
-                path: /health-check
-                port: 8085
-                scheme: HTTP
-              initialDelaySeconds: 10
-              periodSeconds: 15
-              timeoutSeconds: 5
-              failureThreshold: 3
-            readOnlyRootFilesystem: true  
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: 8085
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3 
           resources:
             limits:
               cpu: 100m
