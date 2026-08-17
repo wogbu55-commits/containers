@@ -19,6 +19,22 @@ spec:
       containers:
         - image: bitnami/cluster-autoscaler:latest
           name: cluster-autoscaler
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 10000
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: 8085
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3    
           resources:
             limits:
               cpu: 100m
@@ -35,4 +51,8 @@ spec:
             - --expander=least-waste
             - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<YOUR CLUSTER NAME>
           imagePullPolicy: "Always"
+      initContainers:
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
 
