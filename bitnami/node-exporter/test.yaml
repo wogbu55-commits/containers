@@ -20,11 +20,17 @@ spec:
       containers:
       - image: bitnami/node-exporter
         name: node-exporter
+        imagePullPolicy: "Always"
+        ports:
+        - name: metrics
+          containerPort: 9100
         securityContext:
           allowPrivilegeEscalation: false
+          runAsUser: 10000
           runAsNonRoot: true
           capabilities:
             drop: ["ALL"]
+          readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /metrics
@@ -33,6 +39,14 @@ spec:
           periodSeconds: 20
           timeoutSeconds: 5
           failureThreshold: 3
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
       initContainers:
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
