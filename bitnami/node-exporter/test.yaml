@@ -22,6 +22,17 @@ spec:
         name: node-exporter
         securityContext:
           allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          capabilities:
+            drop: ["ALL"]
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9100
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
       initContainers:
         securityContext:
           allowPrivilegeEscalation: false
